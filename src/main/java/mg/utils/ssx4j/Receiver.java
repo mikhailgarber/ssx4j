@@ -1,7 +1,5 @@
 package mg.utils.ssx4j;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,17 +7,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Receiver implements ReportingInterface,
-		LifecycleInterface {
+		LifecycleInterface, ReceiverInterface {
 
 	// collaborators
 	private LoggingInterface logger = new SystemLogger();
-	private GetterInterface getter;
 	
 	
-	
-	public void setGetter(GetterInterface getter) {
-		this.getter = getter;
-	}
 
 	public void setLogger(LoggingInterface logger) {
 		this.logger = logger;
@@ -37,32 +30,23 @@ public class Receiver implements ReportingInterface,
 		callbacks.remove(id);
 	}
 
+	@Override
+	public void receive(String data) {
+		try {
+			
+			for (Entry<String, ReceiverCallbackInterface> entry : callbacks
+					.entrySet()) {
+				submitWork(entry.getValue(), data);
+			}
+		} catch (Exception e) {
+			logger.warn("receiving", e);
+			
+		}
+	}
 	
-
-	private Thread worker;
 
 	public void init() {
 
-		worker = new Thread(new Runnable() {
-
-			public void run() {
-				while (true) {
-					DataInputStream stream = getter.getStream();
-					try {
-						String s = stream.readUTF();
-						for (Entry<String, ReceiverCallbackInterface> entry : callbacks
-								.entrySet()) {
-							submitWork(entry.getValue(), s);
-						}
-					} catch (Exception e) {
-						logger.warn("receiving", e);
-						stream = getter.getStream();
-					}
-
-				}
-			}
-		});
-		worker.start();
 
 		receiverQueueReader = Executors.newFixedThreadPool(20);
 		logger.info("inited");
@@ -81,7 +65,7 @@ public class Receiver implements ReportingInterface,
 	}
 
 	public void destroy() {
-		worker.interrupt();
+		
 
 	}
 

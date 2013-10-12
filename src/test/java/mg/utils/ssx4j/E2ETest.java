@@ -6,19 +6,23 @@ public class E2ETest {
 
 	@Test
 	public void test() throws Exception {
-		InMemoryTestConnector connector = new InMemoryTestConnector();
+		
 		Sender sender = new Sender();
-		sender.setHostResolver(connector);
-		sender.setPoster(connector);
+		sender.setHostResolver(new SingleServerSocketResolver());
+		sender.setPoster(new SocketPoster());
 		sender.init();
-		Receiver receiver = new Receiver();
-		receiver.setGetter(connector);
-		receiver.registerCallback("test", connector);
+		Receiver receiver = new Receiver();		
+		receiver.registerCallback("test", new TestCallback());
 		receiver.init();
+		SocketReceiver socketServer = new SocketReceiver();
+		socketServer.setReceiver(receiver);
+		socketServer.init();
 
 		Thread.sleep(2000);
 
 		sender.send("hello world");
+		sender.send("hello world");
+		
 		Thread.sleep(6000);
 	}
 
