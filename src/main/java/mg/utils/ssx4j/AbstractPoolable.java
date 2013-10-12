@@ -8,7 +8,7 @@ public abstract class AbstractPoolable  extends AbstractConfigurable implements 
 
 	protected ExecutorService pool;
 
-	protected LoggingInterface logger = new SystemLogger();
+	protected LoggingInterface logger = new Log4JLogger(getClass());
 	
 	
 

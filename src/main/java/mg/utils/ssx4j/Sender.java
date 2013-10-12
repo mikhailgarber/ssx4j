@@ -18,7 +18,7 @@ public class Sender implements SenderInterface, ReportingInterface, LifecycleInt
 	
 	// collaborators
 	private HostResolverInterface hostResolver;
-	private LoggingInterface logger = new SystemLogger();
+	private LoggingInterface logger = new Log4JLogger(getClass());
 	private PosterInterface poster;
 
 	// internal

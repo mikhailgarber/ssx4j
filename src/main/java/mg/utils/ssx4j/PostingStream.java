@@ -7,16 +7,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.io.IOUtils;
 
-
-
 public class PostingStream implements LifecycleInterface, Runnable {
-	
+
 	private Thread worker;
 	private BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
 	private final DataOutputStream stream;
 	private boolean valid = true;
-	
-	
 
 	public PostingStream(DataOutputStream stream) {
 		super();
@@ -26,37 +22,38 @@ public class PostingStream implements LifecycleInterface, Runnable {
 	}
 
 	public void init() {
-		
-		
+
 	}
 
 	public void destroy() {
 		IOUtils.closeQuietly(stream);
-		if(!worker.isInterrupted()) {
+		if (!worker.isInterrupted()) {
 			worker.interrupt();
 		}
 	}
 
 	public void run() {
 		try {
-			System.out.println("from queue");
-			String data = queue.take();
-			try {
-				stream.writeUTF(data);
-				System.out.println("wrote to stream");
-			} catch (IOException ioe) {
-				queue.add(data);
-				throw ioe;
+			while (true) {
+				System.out.println("from queue");
+				String data = queue.take();
+				try {
+					stream.writeUTF(data);
+					System.out.println("wrote to stream");
+				} catch (IOException ioe) {
+					queue.add(data);
+					throw ioe;
+				}
 			}
 		} catch (Exception ex) {
 			destroy();
 			valid = false;
 		}
-		
+
 	}
-	
+
 	public void post(String data) {
-		if(!valid) {
+		if (!valid) {
 			throw new IllegalStateException("poster is not valid");
 		}
 		this.queue.add(data);
@@ -66,6 +63,5 @@ public class PostingStream implements LifecycleInterface, Runnable {
 	public boolean isValid() {
 		return valid;
 	}
-	
-	
+
 }

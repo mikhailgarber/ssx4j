@@ -10,7 +10,7 @@ public class Receiver implements ReportingInterface,
 		LifecycleInterface, ReceiverInterface {
 
 	// collaborators
-	private LoggingInterface logger = new SystemLogger();
+	private LoggingInterface logger = new Log4JLogger(getClass());
 	
 	
 
