@@ -8,8 +8,24 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class AbstractReceiver implements ReportingInterface,
+public class Receiver implements ReportingInterface,
 		LifecycleInterface {
+
+	// collaborators
+	private LoggingInterface logger = new SystemLogger();
+	private GetterInterface getter;
+	
+	
+	
+	public void setGetter(GetterInterface getter) {
+		this.getter = getter;
+	}
+
+	public void setLogger(LoggingInterface logger) {
+		this.logger = logger;
+	}
+	
+	
 
 	private Map<String, ReceiverCallbackInterface> callbacks = new HashMap<String, ReceiverCallbackInterface>();
 
@@ -21,7 +37,7 @@ public abstract class AbstractReceiver implements ReportingInterface,
 		callbacks.remove(id);
 	}
 
-	public abstract DataInputStream getStream();
+	
 
 	private Thread worker;
 
@@ -31,15 +47,16 @@ public abstract class AbstractReceiver implements ReportingInterface,
 
 			public void run() {
 				while (true) {
-					DataInputStream stream = getStream();
+					DataInputStream stream = getter.getStream();
 					try {
 						String s = stream.readUTF();
 						for (Entry<String, ReceiverCallbackInterface> entry : callbacks
 								.entrySet()) {
 							submitWork(entry.getValue(), s);
 						}
-					} catch (IOException e) {
-						stream = getStream();
+					} catch (Exception e) {
+						logger.warn("receiving", e);
+						//stream = getter.getStream();
 					}
 
 				}
@@ -48,7 +65,7 @@ public abstract class AbstractReceiver implements ReportingInterface,
 		worker.start();
 
 		receiverQueueReader = Executors.newFixedThreadPool(20);
-		//logger.info("inited");
+		logger.info("inited");
 
 	}
 

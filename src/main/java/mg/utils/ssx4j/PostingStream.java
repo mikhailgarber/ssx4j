@@ -39,9 +39,11 @@ public class PostingStream implements LifecycleInterface, Runnable {
 
 	public void run() {
 		try {
+			System.out.println("from queue");
 			String data = queue.take();
 			try {
 				stream.writeUTF(data);
+				System.out.println("wrote to stream");
 			} catch (IOException ioe) {
 				queue.add(data);
 				throw ioe;
@@ -58,6 +60,7 @@ public class PostingStream implements LifecycleInterface, Runnable {
 			throw new IllegalStateException("poster is not valid");
 		}
 		this.queue.add(data);
+		System.out.println("posted");
 	}
 
 	public boolean isValid() {

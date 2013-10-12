@@ -2,7 +2,7 @@ package mg.utils.ssx4j;
 
 import java.net.URL;
 
-public class SocketSender extends AbstractSender {
+public class SocketPoster implements PosterInterface {
 
 	@Override
 	public PostingStream createStream(URL endpoint) {
