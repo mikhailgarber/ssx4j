@@ -56,7 +56,7 @@ public class Receiver implements ReportingInterface,
 						}
 					} catch (Exception e) {
 						logger.warn("receiving", e);
-						//stream = getter.getStream();
+						stream = getter.getStream();
 					}
 
 				}

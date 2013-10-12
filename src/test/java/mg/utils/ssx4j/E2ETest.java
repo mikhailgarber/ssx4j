@@ -15,7 +15,9 @@ public class E2ETest {
 		receiver.setGetter(connector);
 		receiver.registerCallback("test", connector);
 		receiver.init();
+
 		Thread.sleep(2000);
+
 		sender.send("hello world");
 		Thread.sleep(6000);
 	}

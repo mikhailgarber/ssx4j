@@ -13,6 +13,7 @@ import java.util.List;
 public class InMemoryTestConnector implements HostResolverInterface, PosterInterface, GetterInterface, ReceiverCallbackInterface {
 
 	PipedOutputStream pos = new PipedOutputStream();
+
 	PipedInputStream pis = null;
 	DataInputStream dis = null;
 	DataOutputStream dos = null;
@@ -40,6 +41,10 @@ public class InMemoryTestConnector implements HostResolverInterface, PosterInter
 		PostingStream stream = new PostingStream(dos);
 		return stream;
 	}
+	
+	
+
+	
 
 	@Override
 	public List<URL> resolve(String context) {

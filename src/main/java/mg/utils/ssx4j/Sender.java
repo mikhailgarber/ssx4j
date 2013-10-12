@@ -46,7 +46,9 @@ public class Sender implements SenderInterface, ReportingInterface, LifecycleInt
 		senderQueueReader.submit(new Runnable() {
 
 			public void run() {
+
 				logger.info("going thru endpoints:" + endpoints);
+
 				synchronized (endpoints) {
 					for (URL endpoint : endpoints) {
 						PostingStream stream = streams.get(endpoint);
