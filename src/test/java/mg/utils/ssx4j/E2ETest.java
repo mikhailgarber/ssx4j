@@ -6,7 +6,10 @@ import org.junit.Test;
 public class E2ETest {
 
 	@Test
-	public void test() throws Exception {
+	public void testSimple() throws Exception {
+		
+		final int NUMBER_OF_STRINGS_TO_WRITE = 4096;
+		
 		TestCallback callback = new TestCallback();
 		Sender sender = new Sender();
 		sender.setHostResolver(new SingleServerSocketResolver());
@@ -19,14 +22,15 @@ public class E2ETest {
 		socketServer.setReceiver(receiver);
 		socketServer.init();
 
-		Thread.sleep(100);
-
-		for (int i = 0; i < 4096; i++)
-			sender.send("hello world");
-
 		Thread.sleep(1000);
+
+		
+		for (int i = 0; i < NUMBER_OF_STRINGS_TO_WRITE; i++)
+			sender.send("hello world");
 		System.out.println("stats:" + sender.getStats());
-		Assert.assertEquals("got:" + callback.getHelloCount(), 4096, callback.getHelloCount());
+		Thread.sleep(3000);
+		
+		Assert.assertEquals("got:" + callback.getHelloCount(), NUMBER_OF_STRINGS_TO_WRITE, callback.getHelloCount());
 	}
 
 }

@@ -6,19 +6,14 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Receiver implements ReportingInterface,
-		LifecycleInterface, ReceiverInterface {
+public class Receiver extends AbstractPoolable implements ReceiverInterface {
 
 	// collaborators
 	private LoggingInterface logger = new Log4JLogger(getClass());
-	
-	
 
 	public void setLogger(LoggingInterface logger) {
 		this.logger = logger;
 	}
-	
-	
 
 	private Map<String, ReceiverCallbackInterface> callbacks = new HashMap<String, ReceiverCallbackInterface>();
 
@@ -33,45 +28,41 @@ public class Receiver implements ReportingInterface,
 	@Override
 	public void receive(String data) {
 		try {
-			
-			for (Entry<String, ReceiverCallbackInterface> entry : callbacks
-					.entrySet()) {
+
+			for (Entry<String, ReceiverCallbackInterface> entry : callbacks.entrySet()) {
 				submitWork(entry.getValue(), data);
 			}
 		} catch (Exception e) {
 			logger.warn("receiving", e);
-			
+
 		}
 	}
-	
 
 	public void init() {
 
-
-		receiverQueueReader = Executors.newFixedThreadPool(20);
+		super.init();
 		logger.info("inited");
 
 	}
 
-	private ExecutorService receiverQueueReader;
-
 	protected void submitWork(final ReceiverCallbackInterface callback, final String s) {
-		receiverQueueReader.submit(new Runnable() {
+		pool.execute(new Runnable() {
 
 			public void run() {
-				callback.received(s);				
-			}});
+				callback.received(s);
+			}
+		});
 
 	}
 
 	public void destroy() {
-		
+		super.destroy();
 
 	}
 
-	public Map<String, Long> getStats() {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public int getPoolSize() {
+		return config.getInteger(ConfigInterface.RECEIVER_POOL_SIZE);
 	}
 
 }

@@ -1,8 +1,10 @@
 package mg.utils.ssx4j;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class AbstractPoolable  extends AbstractConfigurable implements ReportingInterface {
 
@@ -18,8 +20,10 @@ public abstract class AbstractPoolable  extends AbstractConfigurable implements 
 
 	@Override
 	public Map<String, Long> getStats() {
-		// TODO Auto-generated method stub
-		return null;
+		Long pooSize = new Long(((ThreadPoolExecutor) this.pool).getQueue().size());
+		Map<String, Long> result = new HashMap<String, Long>();
+		result.put("POOL_QUEUE_SIZE", pooSize);
+		return result;
 	}
 
 	@Override

@@ -16,6 +16,15 @@ public class DefaultConfig implements ConfigInterface {
 		if(ConfigInterface.SOCKET_POOL_SIZE.equals(name)) {
 			return 20;
 		}
+		if(ConfigInterface.SENDER_POOL_SIZE.equals(name)) {
+			return 20;
+		}
+		if(ConfigInterface.RECEIVER_POOL_SIZE.equals(name)) {
+			return 20;
+		}
+		if(ConfigInterface.UPDATE_ENDPOINTS_INTERVAL_SECONDS.equals(name)) {
+			return 1;
+		}
 		return null;
 	}
 
