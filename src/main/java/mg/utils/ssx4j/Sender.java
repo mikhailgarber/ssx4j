@@ -2,6 +2,7 @@ package mg.utils.ssx4j;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class Sender implements SenderInterface, ReportingInterface, LifecycleInt
 	private List<URL> endpoints = new ArrayList<URL>();
 	private ScheduledThreadPoolExecutor endpointUpdater;
 	private ExecutorService senderQueueReader;
+	private long cntSent = 0L;
+	private long startup = System.currentTimeMillis();
 
 	public void setHostResolver(HostResolverInterface hostResolver) {
 		this.hostResolver = hostResolver;
@@ -57,6 +60,7 @@ public class Sender implements SenderInterface, ReportingInterface, LifecycleInt
 						}
 						try {
 							stream.post(data);
+							cntSent++;
 						} catch (Exception ex) {
 							logger.warn("posting to stream", ex);
 						}
@@ -71,6 +75,7 @@ public class Sender implements SenderInterface, ReportingInterface, LifecycleInt
 	public Map<String, Long> getStats() {
 		Map<String, Long> stats = new HashMap<String, Long>();
 		stats.put("SENDER_QUEUE_SIZE", getSenderQueueSize());
+		stats.put("SENDER_RATE", cntSent * 1000 / (System.currentTimeMillis() - startup));
 		return stats;
 	}
 
@@ -88,7 +93,7 @@ public class Sender implements SenderInterface, ReportingInterface, LifecycleInt
 			public void run() {
 				updateEndpointsPeriodically();
 			}
-		}, INITIAL_DELAY_SECONDS, UPDATE_ENDPOINTS_INTERVAL_SECONDS, TimeUnit.SECONDS);
+		}, 0L, UPDATE_ENDPOINTS_INTERVAL_SECONDS, TimeUnit.SECONDS);
 		senderQueueReader = Executors.newFixedThreadPool(20);
 		logger.info("inited");
 	}

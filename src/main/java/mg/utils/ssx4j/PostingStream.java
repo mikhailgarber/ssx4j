@@ -13,6 +13,8 @@ public class PostingStream implements LifecycleInterface, Runnable {
 	private BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
 	private final DataOutputStream stream;
 	private boolean valid = true;
+	private LoggingInterface logger = new Log4JLogger(getClass());
+	
 
 	public PostingStream(DataOutputStream stream) {
 		super();
@@ -35,11 +37,12 @@ public class PostingStream implements LifecycleInterface, Runnable {
 	public void run() {
 		try {
 			while (true) {
-				System.out.println("from queue");
+				logger.info("waiting on queue");
 				String data = queue.take();
 				try {
 					stream.writeUTF(data);
-					System.out.println("wrote to stream");
+					stream.flush();
+					logger.info("wrote to stream");
 				} catch (IOException ioe) {
 					queue.add(data);
 					throw ioe;
@@ -57,7 +60,7 @@ public class PostingStream implements LifecycleInterface, Runnable {
 			throw new IllegalStateException("poster is not valid");
 		}
 		this.queue.add(data);
-		System.out.println("posted");
+		logger.info("posted");
 	}
 
 	public boolean isValid() {
