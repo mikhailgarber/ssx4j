@@ -6,6 +6,7 @@ public interface ConfigInterface {
 	String SENDER_POOL_SIZE = "senderPoolSize";
 	String UPDATE_ENDPOINTS_INTERVAL_SECONDS = "senderUpdateEndpointsIntervalSeconds";
 	String RECEIVER_POOL_SIZE = "receiverPoolSize";
+	String URL_RELOAD_SECONDS = "urlReloadSeconds";
 	
 	public String getString(String name);
 	public Integer getInteger(String name);

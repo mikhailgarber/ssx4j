@@ -22,6 +22,9 @@ public class DefaultConfig implements ConfigInterface {
 		if(ConfigInterface.RECEIVER_POOL_SIZE.equals(name)) {
 			return 20;
 		}
+		if(ConfigInterface.URL_RELOAD_SECONDS.equals(name)) {
+			return 5;
+		}
 		if(ConfigInterface.UPDATE_ENDPOINTS_INTERVAL_SECONDS.equals(name)) {
 			return 1;
 		}
