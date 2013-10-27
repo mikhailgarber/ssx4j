@@ -2,6 +2,7 @@ package mg.utils.ssx4j;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,14 @@ public class Sender extends AbstractPoolable implements SenderInterface {
 
 	// internal
 	private List<URL> endpoints = new ArrayList<URL>();
+	public List<URL> getEndpoints() {
+		return Collections.unmodifiableList(endpoints);
+	}
+
+
+
+
+
 	private ScheduledThreadPoolExecutor endpointUpdater;
 	
 	private long cntSent = 0L;
