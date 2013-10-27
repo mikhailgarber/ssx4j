@@ -26,7 +26,7 @@ public class DefaultConfig implements ConfigInterface {
 			return 5;
 		}
 		if(ConfigInterface.UPDATE_ENDPOINTS_INTERVAL_SECONDS.equals(name)) {
-			return 1;
+			return 20;
 		}
 		return null;
 	}
