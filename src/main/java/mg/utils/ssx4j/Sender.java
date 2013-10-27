@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -122,7 +123,9 @@ public class Sender extends AbstractPoolable implements SenderInterface {
 	public void destroy() {
 		super.destroy();
 		endpointUpdater.shutdownNow();
-		
+		for(Entry<URL, PostingStream> entry : streams.entrySet()) {
+			entry.getValue().destroy();
+		}
 	}
 
 	@Override
