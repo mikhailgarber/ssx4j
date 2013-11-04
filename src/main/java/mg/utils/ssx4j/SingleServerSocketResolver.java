@@ -10,7 +10,7 @@ public class SingleServerSocketResolver extends AbstractConfigurable implements 
 	
 	
 	@Override
-	public List<URL> resolve(String context) {
+	public List<URL> resolve() {
 		ArrayList<URL> result = new ArrayList<URL>();
 		try {
 			result.add(new URL("http://localhost:" + config.getInteger(ConfigInterface.SERVER_SOCKET_PORT)));

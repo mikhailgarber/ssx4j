@@ -14,9 +14,9 @@ public class URLPropertiesResolverTest {
 
 	@Test
 	public void test() throws IOException {
-		HostResolverInterface resolver = new PropertiesURLHostResolver();
-		
-		List<URL> urls = resolver.resolve("file:///" + new File(".").getCanonicalPath() + "/src/test/java/url_host_resolver_test.properties");
+		PropertiesURLHostResolver resolver = new PropertiesURLHostResolver();
+		resolver.setDefaultPropertiesUrl("file:///" + new File(".").getCanonicalPath() + "/src/test/java/url_host_resolver_test.properties");
+		List<URL> urls = resolver.resolve();
 		System.out.println(urls);
 		Assert.assertEquals(1, urls.size());
 	}

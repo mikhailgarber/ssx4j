@@ -27,19 +27,18 @@ public class PropertiesURLHostResolver extends AbstractConfigurable implements H
 	private List<URL> cachedList = null;
 	private long lastLoaded = 0L;
 	
-	private String defaultPropertiesUrl = null;
+	private String propertiesUrl = null;
 	
 	
 	
 	public void setDefaultPropertiesUrl(String defaultPropertiesUrl) {
-		this.defaultPropertiesUrl = defaultPropertiesUrl;
+		this.propertiesUrl = defaultPropertiesUrl;
 	}
 
 
 	@Override
-	public List<URL> resolve(String givenPropertiesUrl) { 
+	public List<URL> resolve() { 
 		
-		String propertiesUrl = (givenPropertiesUrl == null)? this.defaultPropertiesUrl : givenPropertiesUrl;
 		
 		if(cacheExpired()) {
 			cachedList = null;

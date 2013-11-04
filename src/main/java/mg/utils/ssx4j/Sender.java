@@ -107,7 +107,7 @@ public class Sender extends AbstractPoolable implements SenderInterface {
 		try {
 			synchronized (endpoints) {
 				endpoints.clear();
-				endpoints.addAll(hostResolver.resolve(null));
+				endpoints.addAll(hostResolver.resolve());
 				configurePosters();
 			}
 		} catch (Exception ex) {
