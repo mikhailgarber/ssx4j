@@ -18,7 +18,6 @@ public class Sender extends AbstractPoolable implements SenderInterface {
 
 	
 	
-	
 	// collaborators
 	private HostResolverInterface hostResolver;
 	
@@ -60,12 +59,15 @@ public class Sender extends AbstractPoolable implements SenderInterface {
 
 				synchronized (endpoints) {
 					for (URL endpoint : endpoints) {
+						logger.info("using endpoint:" + endpoint);
 						PostingStream stream = streams.get(endpoint);
 						if (stream == null) {
+							logger.info("missing stream for:" + endpoint);
 							continue;
 						}
 						try {
 							stream.post(data);
+							logger.info("posted data to stream");
 							cntSent++;
 						} catch (Exception ex) {
 							logger.warn("posting to stream", ex);
@@ -119,10 +121,13 @@ public class Sender extends AbstractPoolable implements SenderInterface {
 
 	private void configurePosters() {
 		for (URL endpoint : endpoints) {
+			logger.info("configuring endpoint:" + endpoint);
 			PostingStream stream = streams.get(endpoint);
+			logger.info("using stream:" + stream);
 			if (stream == null || !stream.isValid()) {
 				streams.remove(endpoint);
 				stream = poster.createStream(endpoint);
+				logger.info("created new stream");
 				streams.put(endpoint, stream);
 			}
 		}

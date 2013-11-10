@@ -67,4 +67,10 @@ public class PostingStream implements LifecycleInterface, Runnable {
 		return valid;
 	}
 
+	@Override
+	public String toString() {
+		return "PostingStream [valid=" + valid + "]";
+	}
+
+	
 }

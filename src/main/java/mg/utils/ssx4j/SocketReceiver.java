@@ -13,8 +13,7 @@ public class SocketReceiver extends AbstractPoolable {
 	Thread serverThread;
 
 	ReceiverInterface receiver;
-	
-	
+
 	public void setReceiver(ReceiverInterface receiver) {
 		this.receiver = receiver;
 	}
@@ -22,37 +21,45 @@ public class SocketReceiver extends AbstractPoolable {
 	@Override
 	public void init() {
 		super.init();
-		if(this.receiver == null) {
+		if (this.receiver == null) {
 			throw new IllegalStateException("receiver is missing");
 		}
 		try {
 			serverSocket = new ServerSocket(config.getInteger(ConfigInterface.SERVER_SOCKET_PORT));
 			serverThread = new Thread(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					pool.execute(new Runnable() {
-						
-						@Override
-						public void run() {
-							try {
-								handleClient(serverSocket.accept());
-							} catch (IOException e) {
-								logger.warn("serving client", e);
-							}							
-						}
+					while (true) {
+						try {
+							logger.info("waiting on socket");
+							final Socket clientSocket = serverSocket.accept();
+							logger.info("got conn sending to pool");
+							pool.execute(new Runnable() {
 
-						
-					});
-					
+								@Override
+								public void run() {
+
+									try {
+										handleClient(clientSocket);
+									} catch (IOException e) {
+										logger.warn("serving client", e);
+									}
+
+								}
+
+							});
+						} catch (IOException e) {
+							logger.warn("serving clients", e);
+						}
+					}
 				}
 			});
 			serverThread.start();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		
-		
+
 	}
 
 	private void handleClient(Socket socket) throws IOException {
@@ -60,7 +67,7 @@ public class SocketReceiver extends AbstractPoolable {
 		try {
 			dis = new DataInputStream(socket.getInputStream());
 			String data = null;
-			while(true) {
+			while (true) {
 				data = dis.readUTF();
 				receiver.receive(data);
 			}
@@ -68,7 +75,7 @@ public class SocketReceiver extends AbstractPoolable {
 			IOUtils.closeQuietly(dis);
 		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		try {
