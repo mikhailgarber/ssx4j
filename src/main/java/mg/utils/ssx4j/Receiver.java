@@ -3,8 +3,6 @@ package mg.utils.ssx4j;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Receiver extends AbstractPoolable implements ReceiverInterface {
 
